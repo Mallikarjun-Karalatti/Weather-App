@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./index.css" >
+    <title>Weather</title>
+</head>
+<body>
+    <center>
+    <div class="weather">
+        <div class="search">
+            <input  id="city" type="text"  spellcheck="false"   placeholder="Enter the city name..."/>
+            <button id="btn" ><img src="./images/search.png" alt="search-icon"/></button>
+        </div>
+        <div id="error"><p></p></div>
+        <div id="Info">
+        <div id="wth-img"><img src="./images/clouds.png"></div>
+        <h1>21 °C</h1>
+        <h2>Bengaluru</h2>
+        <div class="extra">
+             <div id="humidity">
+                <div><img src="./images/humidity.png"></div>
+                <div>
+                    <p>Humidity</p>
+                    <p id="humidity-value">35%</p>
+                </div>
+             </div>
+             <div id="wind">
+                <div><img src="./images/wind.png"></div>
+                <div>
+                    <p>Wind Speed</p>
+                    <p id="wind-speed">5kph</p>
+                </div>
+             </div>
+        </div>
+       </div>
+    </div>
+</center>
+<script>
+   const btn = document.getElementById('btn');
+   const weatherImage = document.getElementById('wth-img').querySelector('img');
+
+
+   btn.addEventListener("click",getInfo,false);
+   
+   async function getInfo(){
+
+    const city = document.getElementById('city').value;
+ 
+    const keyId = "8a53e7cd2db7566d4a8f5e6c97d2640f";
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${keyId}&units=metric`;
+
+    const response =  await fetch(url);
+    const  data = await response.json();
+
+    
+   
+    if(response.status === 404 ){
+        document.getElementById('error').querySelector('p').innerHTML = `${city} is not recongnized`;
+        document.getElementById('error').style.display = 'block';
+    }
+    else{
+
+        const temp = Math.round(data.main.temp);
+        const humidityValue = data.main.humidity;
+        const windSpeed = data.wind.speed;
+        const weatherDescription = data.weather[0].main;
+
+        document.querySelector('h2').innerHTML = city;
+        document.querySelector('h1').innerHTML = temp;
+        document.querySelector('#humidity-value').innerHTML = humidityValue;
+        document.querySelector('#wind-speed').innerHTML = windSpeed;
+
+        console.log(weatherDescription);
+        console.log(weatherImage.src);
+        
+        switch(weatherDescription){
+            case  'Clear': weatherImage.src = "./images/clear.png";
+                           break;
+            case  'Haze': weatherImage.src = "./images/mist.png";
+                           break;  
+            case  'Mist': weatherImage.src = "./images/mist.png";
+                           break;   
+            case  'Clouds': weatherImage.src = "./images/clouds.png";
+                           break; 
+            case  'Drizzle': weatherImage.src = "./images/drizzle.png";
+                           break;
+            case  'Humidity': weatherImage.src = "./images/humidity.png";
+                           break; 
+            case  'Rain': weatherImage.src = "./images/rain.png";
+                           break;
+            case  'Search': weatherImage.src = "./images/search.png";
+                           break; 
+            case  'Wind': weatherImage.src = "./images/wind.png";
+                           break;                                                                               
+        }
+
+        document.getElementById('Info').style.display = 'block';
+    }
+
+
+   }
+
+</script>
+
+</body>
+</html>
